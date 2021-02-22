@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../function/k8scluster/
+  - ../../shared
+transformers:
+  - ../../../function/k8scluster/replacements
+  - cleanup.yaml

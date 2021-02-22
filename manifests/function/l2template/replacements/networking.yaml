@@ -1,0 +1,21 @@
+# These rules inject host-specific information from the `host-catalogue`
+# into the hostgenerator-m3 function's Template plugin config.
+apiVersion: airshipit.org/v1alpha1
+kind: ReplacementTransformer
+metadata:
+  name: l2template-replacements
+  annotations:
+    config.kubernetes.io/function: |-
+      container:
+        image: quay.io/airshipit/replacement-transformer:latest
+replacements:
+- source:
+    objref:
+      kind: VariableCatalogue
+      name: networking 
+    fieldref: "{.ipam}" 
+  target:
+    objref:
+      kind: Templater
+      name: l2template-template
+    fieldrefs: [".values.ipam"]

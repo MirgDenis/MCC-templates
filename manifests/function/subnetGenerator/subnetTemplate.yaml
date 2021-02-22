@@ -1,0 +1,22 @@
+apiVersion: airshipit.org/v1alpha1
+kind: Templater
+metadata:
+  name: subnet-template
+  annotations:
+    config.kubernetes.io/function: |-
+      container:
+        image: quay.io/airshipit/templater:latest
+
+template: |
+  {{ if .ipam.subnets }}
+  {{- $envAll := . }}
+  {{- range $subnetName, $subnetVar := .ipam.subnets }}
+  ---
+  apiVersion: ipam.mirantis.com/v1alpha1
+  kind: Subnet
+  metadata:
+    name: {{ $subnetName }}
+  spec:
+    cidr: {{ $subnetVar.cidr }} 
+  {{ end -}}
+  {{ end -}}

@@ -1,0 +1,17 @@
+{% set i = inventory.parameters %}
+{% if 'subnets' in i %}
+{% set s = i.subnets %}
+{% for name, values in s.items() %}
+---
+apiVersion: ipam.mirantis.com/v1alpha1
+kind: Subnet
+metadata:
+  name: {{ name }}
+  namespace: {{ i.cluster.namespace }}
+  labels:
+    kaas.mirantis.com/provider: {{ i.cluster.provider }}
+    kaas.mirantis.com/region: {{ i.cluster.region }}
+spec:
+  cidr: {{ values.cidr }} 
+{% endfor %}
+{% endif %}

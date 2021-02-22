@@ -1,0 +1,21 @@
+# Site-level, phase-specific lists of hosts to generate
+# This is used by the hostgenerator-m3 function to narrow down the site-level
+# host-catalogue to just the hosts needed for a particular phase.
+apiVersion: airshipit.org/v1alpha1
+kind: VariableCatalogue
+metadata:
+  name: host-generation-catalogue
+hosts:
+  m3:
+    managers:
+    - name: node01
+    workers:
+      oscompute:
+      - name: node02
+        BMHProfile:
+          name: compute
+          namespace: child
+      oscontrol:
+      - name: node03
+        l2template:
+          name: openstack

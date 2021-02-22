@@ -1,0 +1,82 @@
+{% set i = inventory.parameters %}
+{% set h = i.hosts %}
+{% if 'tf_ctl' in h %}
+{% set tf = true %}
+{% else %}
+{% set tf = false %}
+{% endif %}
+{% for subtype, values in h.items() %}
+{% for n in values.names %}
+---
+apiVersion: "cluster.k8s.io/v1alpha1"
+kind: Machine
+metadata:
+  name: {{ n }}
+  namespace: {{ i.cluster.namespace }}
+  labels:
+    cluster.sigs.k8s.io/cluster-name: {{ i.cluster.name }}
+    kaas.mirantis.com/provider: {{ i.cluster.provider }}
+    kaas.mirantis.com/region: {{ i.cluster.region }}
+    {% if subtype == 'workers_storage' %}
+    hostlabel.bm.kaas.mirantis.com/storage: 'true'
+    {% endif %}
+spec:
+  providerSpec:
+    value:
+      apiVersion: "baremetal.k8s.io/v1alpha1"
+      kind: "BareMetalMachineProviderSpec"
+      {% if 'BMHProfile' in values %}
+      bareMetalHostProfile:
+        name: {{ values['BMHProfile']['name'] }}
+        namespace: {{ values['BMHProfile']['namespace'] }}
+      {% endif %}
+      {% if 'l2template' in values %}
+      l2TemplateSelector:
+        name: {{ values['l2template']['name'] }}
+      {% endif %}
+      hostSelector:
+        matchLabels:
+          baremetal: hw-{{ n }}
+      nodeLabels:
+      {% if 'nodeLabels' in values %}
+      {% for k,v in values['nodeLabels'].items() %}
+      - key: {{ k }}
+        value: {{ v }}
+      {% endfor %}
+      {% endif %}
+      {% if subtype == 'workers_osctl' %}
+      {% if not tf %}
+      - key: openvswitch
+        value: enabled
+      - key: openstack-gateway
+        value: enabled
+      {% endif %}
+      - key: openstack-control-plane
+        value: enabled
+      {% elif subtype == 'workers_oscmp' %}
+      {% if tf %}
+      - key: tfvrouter
+        value: enabled
+      {% else %}
+      - key: openvswitch
+        value: enabled
+      {% endif %}
+      - key: openstack-compute-node
+        value: enabled
+      {% elif tf and subtype == 'tf_ctl' %}
+      - key: tfconfig
+        value: enabled
+      - key: tfcontrol
+        value: enabled
+      - key: tfwebui
+        value: enabled
+      - key: tfconfigdb
+        value: enabled
+      {% elif tf and subtype == 'tf_nal' %}
+      - key: tfanalytics
+        value: enabled
+      - key: tfanalyticsdb
+        value: enabled
+      {% endif %}
+{% endfor %}
+{% endfor %}

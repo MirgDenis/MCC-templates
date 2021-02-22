@@ -1,0 +1,41 @@
+{% set i = inventory.parameters %}
+apiVersion: cluster.k8s.io/v1alpha1
+kind: Cluster
+metadata:
+  name: {{ i.cluster.name }} 
+  namespace: {{ i.cluster.namespace }}
+  labels:
+    kaas.mirantis.com/provider: {{ i.cluster.provider }}
+    kaas.mirantis.com/region: {{ i.cluster.region }}
+spec:
+  clusterNetwork:
+    services:
+      cidrBlocks:
+        - {{ i.cluster.network.servicesCidr}} 
+    pods:
+      cidrBlocks:
+        - {{ i.cluster.network.podsCidr}}
+  providerSpec:
+    value:
+      apiVersion: baremetal.k8s.io/v1alpha1
+      kind: BaremetalClusterProviderSpec
+      release: {{ i.cluster.release }} 
+      loadBalancerHost: {{ i.cluster.loadBalancerHost }} 
+      dedicatedControlPlane: true
+      helmReleases:
+        - name: metallb
+          values:
+            configInline:
+              address-pools:
+                - name: default
+                  protocol: layer2
+                  addresses:
+                    - {{ i.cluster.metallbPool }} 
+        - name: ceph-controller
+          values: {}
+        - name: stacklight
+      kaas:
+        management:
+          enabled: false
+      publicKeys:
+      - name: {{ i.cluster.publicKey }} 

@@ -1,0 +1,9 @@
+kind: Machine
+metadata:
+  name: not-important 
+spec:
+  providerSpec:
+    value:
+      nodeLabels:
+      - key: hostlabel.bm.kaas.mirantis.com/storage
+        value: 'true'

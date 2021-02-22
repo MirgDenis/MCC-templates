@@ -1,0 +1,32 @@
+{% set i = inventory.parameters %}
+{%- for n, value in inventory.parameters.nodes.items() %}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{n}}-bmc-secret
+  namespace: {{ i.cluster.namespace }}
+  labels:
+    kaas.mirantis.com/credentials: 'true'
+    kaas.mirantis.com/region: {{ i.cluster.region }}
+    kaas.mirantis.com/provider: {{ i.cluster.provider }}
+type: Opaque
+data:
+  username: {{ value.bmcUsername|b64encode }}
+  password: {{ value.bmcPassword|b64encode }}
+---
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: bm-{{n}}
+  labels:
+    kaas.mirantis.com/region: {{ i.cluster.region }}
+    baremetal: hw-{{n}}
+spec:
+  online: true
+  bootUEFI: {{ value.bootUEFI }}
+  bootMACAddress: {{ value.macAddress }}
+  bmc:
+    address: {{ value.bmcAddress }}
+    credentialsName: {{n}}-bmc-secret
+{% endfor %}

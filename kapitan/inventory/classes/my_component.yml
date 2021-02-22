@@ -1,0 +1,11 @@
+parameters:
+  kapitan:
+    compile:
+      - output_path: .
+        input_type: jinja2 
+        output_type: yaml
+        input_paths:
+          - components/cluster/
+          - components/bmh/
+          - components/machine/
+          - components/subnet/

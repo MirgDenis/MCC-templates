@@ -1,0 +1,42 @@
+apiVersion: airshipit.org/v1alpha1
+kind: Templater
+metadata:
+  name: m3-host-template
+  annotations:
+    config.kubernetes.io/function: |-
+      container:
+        image: quay.io/airshipit/templater:latest
+
+template: |
+  {{- $envAll := . }}
+  {{- range .hostsToGenerate }}
+  {{- $hostName := .name }}
+  {{- $host := index $envAll.hosts $hostName }}
+  ---
+  apiVersion: metal3.io/v1alpha1
+  kind: BareMetalHost
+  metadata:
+    name: {{ $hostName }}
+    labels:
+      baremetal: hw-{{ $hostName }}
+    annotations:
+  spec:
+    bootUEFI: {{ $host.bootUEFI }}
+    online: true
+    onlineReady: false
+    bootMACAddress: {{ $host.macAddress }}
+    bmc:
+      address: {{ $host.bmcAddress }}
+      credentialsName: {{ $hostName }}-bmc-secret
+
+  ---
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: {{ $hostName }}-bmc-secret
+    annotations:
+  type: Opaque
+  data:
+    username: {{ $host.bmcUsername | b64enc }}
+    password: {{ $host.bmcPassword | b64enc }}
+  {{ end -}}
