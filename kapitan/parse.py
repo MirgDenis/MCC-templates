@@ -7,7 +7,7 @@ def parse_args():
         description="Parse hardware spreadsheet from CSV to YAML"
     )
     parser.add_argument("spreadsheet", action="store", help=("Path to spreadsheet"))
-    parser.add_argument("catalogue", action="store", help=("Folder where spreadsheet will be placed"))
+    parser.add_argument("catalogue", action="store", help=("Folder where values will be placed"))
     return parser.parse_args()
 
 def main():
@@ -29,9 +29,7 @@ def main():
     'Managed Worker Node (K8S worker)': 'worker',
     'Managed Worker Node (OS CP)': 'worker-ctl',
     'Managed Worker Node (OS Compute)': 'worker-cmp',
-    'Managed Worker Node (OSD Node)': 'ceph',
-    'Managed Worker Node (TF CTL)': 'tf-ctl',
-    'Managed Worker Node (TF NAL)': 'tf-nal'
+    'Managed Worker Node (OSD Node)': 'ceph'
     })
     #TODO: consider using nested dict from collecion lib, such creation as below is not very ...  
     inventory = {
@@ -83,8 +81,6 @@ def main():
     inventory['parameters']['hosts']['workers_storage'] = {'names': [f'node{i}-{roles[i]}' for i in range(roles.index.stop-1) if roles[i] == 'ceph']}
     inventory['parameters']['hosts']['workers_osctl'] = {'names': [f'node{i}-{roles[i]}' for i in range(roles.index.stop-1) if roles[i] == 'worker-ctl']}
     inventory['parameters']['hosts']['workers_oscmp'] = {'names': [f'node{i}-{roles[i]}' for i in range(roles.index.stop-1) if roles[i] == 'worker-cmp']}
-    inventory['parameters']['hosts']['tf_ctl'] = {'names': [f'node{i}-{roles[i]}' for i in range(roles.index.stop-1) if roles[i] == 'tf-ctl']}
-    inventory['parameters']['hosts']['tf_nal'] = {'names': [f'node{i}-{roles[i]}' for i in range(roles.index.stop-1) if roles[i] == 'tf-nal']}
     with open(args.catalogue + '/rendered_target.yml', 'w+') as file:
         yaml.dump(inventory, file, default_flow_style=False)
 

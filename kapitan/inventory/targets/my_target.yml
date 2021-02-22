@@ -24,6 +24,9 @@ parameters:
     network:
       podsCidr: podcidr
       servicesCidr: servicecidr
+    stacklight:
+      HAEnabled: true
+      loggingEnabled: true
   hosts:
     managers:
       l2template:

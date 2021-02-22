@@ -32,8 +32,32 @@ spec:
                   addresses:
                     - {{ i.cluster.metallbPool }} 
         - name: ceph-controller
-          values: {}
         - name: stacklight
+          {% if 'stacklight' in i.cluster %}
+          values:
+            {% if 'HAEnabled' in i.cluster.stacklight %}
+            highAvailabilityEnabled: {{ i.cluster.stacklight.HAEnabled }}
+            {% endif %}
+            {% if 'loggingEnabled' in i.cluster.stacklight %}
+            logging:
+              enabled: {{ i.cluster.stacklight.loggingEnabled }}
+            {% endif %}
+            {% if 'emailAlert' in i.cluster.stacklight %}
+            alertmanagerSimpleConfig:
+              email:
+                enabled: true
+                send_resolved: {{ i.cluster.stacklight.emailAlert.send_resolved }}
+                tls:
+                  require_tls: {{ i.cluster.stacklight.emailAlert.require_tls }}
+                auth_identity: {{ i.cluster.stacklight.emailAlert.auth_identity }}
+                auth_password: {{ i.cluster.stacklight.emailAlert.auth_password }}
+                auth_secret: {{ i.cluster.stacklight.emailAlert.auth_secret }}
+                auth_username: {{ i.cluster.stacklight.emailAlert.auth_username }}
+                from: {{ i.cluster.stacklight.emailAlert.from }}
+                to: {{ i.cluster.stacklight.emailAlert.to }}
+                smarthost: {{ i.cluster.stacklight.emailAlert.smarthost }}
+            {% endif %}
+          {% endif %}
       kaas:
         management:
           enabled: false
