@@ -1,8 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - ../../../function/l2template
-  - ../../shared
-transformers:
-  - ../../../function/l2template/replacements
-  - cleanup.yaml

@@ -1,4 +1,0 @@
-apiVersion: kaas.mirantis.com/v1alpha1
-kind: PublicKey
-metadata:
-  name: demokey
