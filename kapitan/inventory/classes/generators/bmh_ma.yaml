@@ -1,0 +1,13 @@
+parameters:
+  kapitan:
+    compile:
+    - output_path: machines
+      input_type: kadet
+      output_type: yml
+      input_paths:
+        - components/generators/machines
+    - output_path: bmh
+      input_type: kadet
+      output_type: yml
+      input_paths:
+        - components/generators/bmh

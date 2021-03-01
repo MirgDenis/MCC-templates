@@ -1,0 +1,7 @@
+apiVersion: "cluster.k8s.io/v1alpha1"
+kind: Machine
+spec:
+  providerSpec:
+    value:
+      apiVersion: "baremetal.k8s.io/v1alpha1"
+      kind: "BareMetalMachineProviderSpec"

@@ -1,0 +1,18 @@
+apiVersion: airshipit.org/v1alpha1
+kind: ReplacementTransformer
+metadata:
+  name: flattener 
+  annotations:
+    config.kubernetes.io/function: |-
+      container:
+        image: quay.io/airshipit/replacement-transformer:latest
+replacements:
+- source:
+    objref:
+      name: host-generation-catalogue
+    fieldref: "{.hosts.m3.workers.generic}"
+  target:
+    objref:
+      kind: Templater
+      name: machine-template
+    fieldrefs: ["{.values.hostsToGenerate}"]

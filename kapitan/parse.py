@@ -35,7 +35,7 @@ def main():
     })
     #TODO: consider using nested dict from collecion lib, such creation as below is not very ...  
     inventory = {
-        'classes': ['common', 'my_component'],
+        'classes': ['common', 'my_component', 'generators.bmh_ma'],
         'parameters': {
             'target_name': 'rendered_target',
             'subnets': {

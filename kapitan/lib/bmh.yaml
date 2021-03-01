@@ -1,0 +1,5 @@
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+spec:
+  online: true
+  bootUEFI: true 

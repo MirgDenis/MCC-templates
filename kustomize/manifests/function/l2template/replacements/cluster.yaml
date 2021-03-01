@@ -1,0 +1,25 @@
+# These rules inject networking info into the k8scontrol function.
+# Note! They are applied to Cluster object(s) regardless of name, so
+# that they can be defined/used generically.  If more than one Cluster
+# needs to be submitted to a management cluster, these tranformation
+# rules should be applied to each Cluster in isolation, and then
+# the results "mixed together" via kustomize.
+apiVersion: airshipit.org/v1alpha1
+kind: ReplacementTransformer
+metadata:
+  name: k8scluster-metadata-replacements
+  annotations:
+    config.kubernetes.io/function: |-
+      container:
+        image: quay.io/airshipit/replacement-transformer:latest
+replacements:
+- source:
+    objref:
+      kind: VariableCatalogue
+      name: cluster-catalogue 
+    fieldref: "{.commonCluster}"
+  target:
+    objref:
+      kind: Templater
+      name: l2template-template
+    fieldrefs: ["{.values.commonCluster}"]

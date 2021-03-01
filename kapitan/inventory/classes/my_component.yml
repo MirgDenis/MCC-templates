@@ -6,6 +6,4 @@ parameters:
         output_type: yaml
         input_paths:
           - components/cluster/
-          - components/bmh/
-          - components/machine/
           - components/subnet/

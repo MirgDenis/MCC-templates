@@ -1,6 +1,7 @@
 classes:
   - common
   - my_component
+  - generators.bmh_ma
 parameters:
   target_name: my_target
   subnets:

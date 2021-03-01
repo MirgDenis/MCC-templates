@@ -1,0 +1,13 @@
+kind: Machine
+metadata:
+  name: not-important 
+spec:
+  providerSpec:
+    value:
+      nodeLabels:
+      - key: openvswitch 
+        value: enabled 
+      - key: openstack-control-plane 
+        value: enabled 
+      - key: openstack-gateway
+        value: enabled 
